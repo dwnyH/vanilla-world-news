@@ -1,0 +1,10 @@
+input {
+    display: inline-block;
+}
+.source {
+    display: inline-block;
+}
+.sourceCheck{
+    display: inline-block;
+    padding: 7px;
+}
