@@ -7,22 +7,42 @@ class App extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {sources: [], articles:[], loading: false};
+    this.state = {
+      sourceOptions: [],
+      articles: [],
+      sources: [],
+      q: '',
+      from: '',
+      to: ''
+    };
   }
 
   async componentDidMount() {
-    const sourceResponse = await fetch('https://newsapi.org/v2/sources?language=en&apiKey=05f484c7a0f54357ae8795760dc7d2b1');
+    const sourceResponse = await fetch('https://newsapi.org/v2/sources?apiKey=05f484c7a0f54357ae8795760dc7d2b1');
     const sourceData = await sourceResponse.json();
-    const sources = sourceData.sources;
+    const sourceOptions = sourceData.sources;
 
     this.setState({
-      sources,
+      sourceOptions,
       loading: true
     })
   }
 
-  async getArticles(inputValue) {
-    const articlesResponse = await fetch(`https://newsapi.org/v2/everything?q=${inputValue}&apiKey=05f484c7a0f54357ae8795760dc7d2b1`);
+  async getArticles(peace) {
+    //https://newsapi.org/v2/everything?pageSize=30&sortBy=relevancy&apiKey=05f484c7a0f54357ae8795760dc7d2b1&from=2019-01-13&q=%22peace%22
+    //console.log(this.state);
+    debugger;
+
+    const apiRequestUrl = 'https://newsapi.org/v2/everything?pageSize=30&sortBy=relevancy&apiKey=05f484c7a0f54357ae8795760dc7d2b1'
+    const query = Object.keys(this.state)
+                .filter(key => ['q','from','to', 'sources'].includes(key))
+                .map(key =>
+                  key === 'sources' ? (key + '=' + this.state.sources.join(',')) : (key + '=' + this.state[key])
+                )
+                .join('&');
+
+    // const fromDate = {{this.state.fromDate ? this.state.fromDate : ''}};
+    const articlesResponse = await fetch(`${apiRequestUrl}&${query}`);
     const articlesData = await articlesResponse.json();
     const articles = articlesData.articles;
 
@@ -31,8 +51,33 @@ class App extends Component {
     })
   }
 
+  getKeyword(keyword) {
+    console.log(keyword);
+
+    this.setState({
+      keyword
+    })
+  }
+
   getDate(date) {
     console.log(date);
+    let from;
+    let to;
+
+    if (date.includes('to')) {
+      to = date.slice(3);
+      this.setState({ to });
+    } else {
+      from = date.slice(5);
+      this.setState({ from });
+    }
+  }
+
+  getSources(checkedSources) {
+    debugger;
+    this.setState({
+      sources : [...this.state.sources, checkedSources]
+    })
   }
 
   render() {
@@ -41,10 +86,15 @@ class App extends Component {
       <div className="App">
         <div className="navigation">
           <Navigation
-            sources={this.state.sources}
-            onKeyPress={this.getArticles.bind(this)}
-            onChange={this.getDate.bind(this)}
+            sourceOptions={this.state.sourceOptions}
+            keywordInput={this.getKeyword.bind(this)}
+            dateSet={this.getDate.bind(this)}
+            checkboxClick={this.getSources.bind(this)}
+            onSearch={this.getArticles.bind(this)}
           />
+        </div>
+
+        <div className="articles">
           <Articles articles={this.state.articles} />
         </div>
       </div>

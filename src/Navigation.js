@@ -1,30 +1,30 @@
 import React, { Component } from 'react';
 import './Navigation.css';
 
-const Navigation = ({onKeyPress, onChange, sources}) => {
+const Navigation = ({keywordInput, dateSet, checkboxClick, onSearch, sourceOptions}) => {
     return (
         <React.Fragment>
-        <KeywordSearch onKeyPress={onKeyPress}/>
-        <DateInput onChange={onChange}/>
-        <SourceFilter sources={sources} />
+            <KeywordSearch keywordInput={keywordInput} />
+            <DateInput dateSet={dateSet} />
+            <SourceFilter checkboxClick={checkboxClick} sourceOptions={sourceOptions} />
+            <SearchSubmit onSearch={onSearch} />
         </React.Fragment>
     )
 }
 
-const KeywordSearch = ({onKeyPress}) => {
+const KeywordSearch = ({keywordInput}) => {
     return (
         <div className="keyword">
-            <input type="text" id="one" onKeyPress={ev => onKeyPress(ev.target.value)} />
+            <input type="text" id="one" onKeyPress={ev => keywordInput(ev.target.value)} />
         </div>
     );
 }
 
-const DateInput = ({onChange}) => {
-
+const DateInput = ({dateSet}) => {
     return (
         <div className="dateFilter">
-            <input id="startDate" type="date" onChange={ev => onChange(ev.target.value)}></input>
-            <input id="endDate" type="date" onChange={ev => onChange(ev.target.value)}></input>
+            <input id="startDate" type="date" onChange={ev => dateSet(`from ${ev.target.value}`)}></input>
+            <input id="endDate" type="date" onChange={ev => dateSet(`to ${ev.target.value}`)}></input>
         </div>
     );
 
@@ -34,7 +34,9 @@ class SourceFilter extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { optionsVisible : false };
+        this.state = {
+            optionsVisible : false
+        };
     }
 
     handleClick() {
@@ -43,28 +45,35 @@ class SourceFilter extends Component {
         });
     }
 
-    renderSources() {
-        const newsSourceList = this.props.sources.map((news) => {
+    renderSourceOptions() {
+        const newsSourceList = this.props.sourceOptions.map((news) => {
             return (
                 <div className="sourceCheck" key={news.id}>
-                    <input type="checkbox" name={news.name}></input>
+                    <input type="checkbox" id={news.id} onChange={ev => this.props.checkboxClick(ev.target.id)}></input>
                     <div className="source">{news.name}</div>
                 </div>
             );
-        })
+        });
+
         return newsSourceList;
     }
 
     render() {
         return (
             <div className="sourceFilter">
-                <div className="sourceOptionsButton" onClick={this.handleClick.bind(this)}>news options ∨</div>
+                <div className="sourceOptionsButton" onClick={this.handleClick.bind(this)}> news options ∨ </div>
                 <div className="sourceOptions" style={{display: this.state.optionsVisible ? 'block' : 'none' }}>
-                    {this.props.sources.length? this.renderSources() : 'Loading' }
+                    {this.props.sourceOptions.length? this.renderSourceOptions() : 'Loading' }
                 </div>
             </div>
         );
     }
+}
+
+const SearchSubmit = ({onSearch}) => {
+    return (
+        <button className="search" onClick={onSearch}>Search</button>
+    );
 }
 
 export default Navigation;
