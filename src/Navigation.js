@@ -15,7 +15,7 @@ const Navigation = ({keywordInput, dateSet, checkboxClick, onSearch, sourceOptio
 const KeywordSearch = ({keywordInput}) => {
     return (
         <div className="keyword">
-            <input type="text" id="one" onKeyPress={ev => keywordInput(ev.target.value)} />
+            <input type="text" onChange={ev => keywordInput(ev.target.value)} />
         </div>
     );
 }
@@ -23,8 +23,8 @@ const KeywordSearch = ({keywordInput}) => {
 const DateInput = ({dateSet}) => {
     return (
         <div className="dateFilter">
-            <input id="startDate" type="date" onChange={ev => dateSet(`from ${ev.target.value}`)}></input>
-            <input id="endDate" type="date" onChange={ev => dateSet(`to ${ev.target.value}`)}></input>
+            <input className="startDate" type="date" onChange={ev => dateSet(`from ${ev.target.value}`)}></input>
+            <input className="endDate" type="date" onChange={ev => dateSet(`to ${ev.target.value}`)}></input>
         </div>
     );
 
@@ -49,7 +49,7 @@ class SourceFilter extends Component {
         const newsSourceList = this.props.sourceOptions.map((news) => {
             return (
                 <div className="sourceCheck" key={news.id}>
-                    <input type="checkbox" id={news.id} onChange={ev => this.props.checkboxClick(ev.target.id)}></input>
+                    <input type="checkbox" data-id={news.id} onChange={ev => {this.props.checkboxClick(ev.target.getAttribute('data-id'))}}></input>
                     <div className="source">{news.name}</div>
                 </div>
             );

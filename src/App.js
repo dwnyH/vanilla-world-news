@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import Navigation from './Navigation.js';
 import Articles from './Articles.js';
+import ViewButtons from './ViewButton.js';
 
 class App extends Component {
 
@@ -13,7 +14,8 @@ class App extends Component {
       sources: [],
       q: '',
       from: '',
-      to: ''
+      to: '',
+      view:'list'
     };
   }
 
@@ -29,9 +31,6 @@ class App extends Component {
   }
 
   async getArticles(peace) {
-    //https://newsapi.org/v2/everything?pageSize=30&sortBy=relevancy&apiKey=05f484c7a0f54357ae8795760dc7d2b1&from=2019-01-13&q=%22peace%22
-    //console.log(this.state);
-    debugger;
 
     const apiRequestUrl = 'https://newsapi.org/v2/everything?pageSize=30&sortBy=relevancy&apiKey=05f484c7a0f54357ae8795760dc7d2b1'
     const query = Object.keys(this.state)
@@ -40,8 +39,7 @@ class App extends Component {
                   key === 'sources' ? (key + '=' + this.state.sources.join(',')) : (key + '=' + this.state[key])
                 )
                 .join('&');
-
-    // const fromDate = {{this.state.fromDate ? this.state.fromDate : ''}};
+    console.log(query);
     const articlesResponse = await fetch(`${apiRequestUrl}&${query}`);
     const articlesData = await articlesResponse.json();
     const articles = articlesData.articles;
@@ -53,14 +51,12 @@ class App extends Component {
 
   getKeyword(keyword) {
     console.log(keyword);
-
     this.setState({
-      keyword
+      q : keyword
     })
   }
 
   getDate(date) {
-    console.log(date);
     let from;
     let to;
 
@@ -75,9 +71,25 @@ class App extends Component {
 
   getSources(checkedSources) {
     debugger;
-    this.setState({
-      sources : [...this.state.sources, checkedSources]
+    this.setState((prevState) => {
+      let checkedSourceIndex = prevState.sources.indexOf(checkedSources);
+      let checkedSourceCopy = prevState.sources.slice();
+
+      if (checkedSourceIndex === -1) {
+        return {sources : [...this.state.sources, checkedSources]}
+      } else {
+        checkedSourceCopy.splice(checkedSourceIndex, 1)
+        return {sources : checkedSourceCopy};
+      }
     })
+  }
+
+  changeView(className) {
+    if (className.includes('list')) {
+      this.setState({ view : 'list' });
+    } else {
+      this.setState({ view : 'card' });
+    }
   }
 
   render() {
@@ -93,12 +105,14 @@ class App extends Component {
             onSearch={this.getArticles.bind(this)}
           />
         </div>
-
+        <ViewButtons
+          changeView={this.changeView.bind(this)}
+        />
         <div className="articles">
-          <Articles articles={this.state.articles} />
+          <Articles articles={this.state.articles} view={this.state.view}/>
         </div>
       </div>
-    );
+    )
   }
 }
 
