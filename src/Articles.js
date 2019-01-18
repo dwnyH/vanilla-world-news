@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import './Articles.css';
 
 const Articles = ({articles, view}) => {
-    debugger;
     if (view === 'list') {
         return <ListView articles={articles} />
     } else {
@@ -19,7 +18,6 @@ class ListView extends Component {
     }
 
     render() {
-        debugger;
         const articleList = this.props.articles.map((articles, index) => {
             //console.log(articles);
             return (

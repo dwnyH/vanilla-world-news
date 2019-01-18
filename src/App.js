@@ -39,18 +39,28 @@ class App extends Component {
                   key === 'sources' ? (key + '=' + this.state.sources.join(',')) : (key + '=' + this.state[key])
                 )
                 .join('&');
-    console.log(query);
-    const articlesResponse = await fetch(`${apiRequestUrl}&${query}`);
-    const articlesData = await articlesResponse.json();
-    const articles = articlesData.articles;
 
-    this.setState({
-      articles
-    })
+    try {
+      debugger;
+      const articlesResponse = await fetch(`${apiRequestUrl}&${query}`);
+      const articlesData = await articlesResponse.json();
+      const articles = articlesData.articles;
+
+      if (!articles) {
+        alert('검색 범위를 다시 설정해주세요 :)')
+      } else if (!articles.length) {
+        alert('검색결과가 없습니다.')
+      } else {
+        this.setState({ articles });
+      }
+    } catch (err) {
+      console.log(err);
+      alert('검색 범위를 다시 설정해주세요 :)');
+    }
+
   }
 
   getKeyword(keyword) {
-    console.log(keyword);
     this.setState({
       q : keyword
     })
@@ -70,13 +80,19 @@ class App extends Component {
   }
 
   getSources(checkedSources) {
-    debugger;
+
     this.setState((prevState) => {
-      let checkedSourceIndex = prevState.sources.indexOf(checkedSources);
+      let checkedSourceIndex = prevState.sources.indexOf(checkedSources.getAttribute('data-id'));
       let checkedSourceCopy = prevState.sources.slice();
+      debugger;
 
       if (checkedSourceIndex === -1) {
-        return {sources : [...this.state.sources, checkedSources]}
+        if (prevState.sources.length >= 20) {
+          alert('신문사는 최대 20개까지만 선택 가능합니다 :)');
+          checkedSources.checked = false;
+          return;
+        }
+        return {sources : [...this.state.sources, checkedSources.getAttribute('data-id')]}
       } else {
         checkedSourceCopy.splice(checkedSourceIndex, 1)
         return {sources : checkedSourceCopy};
@@ -93,7 +109,6 @@ class App extends Component {
   }
 
   render() {
-
     return (
       <div className="App">
         <div className="navigation">
