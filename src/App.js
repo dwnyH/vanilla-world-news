@@ -34,11 +34,11 @@ class App extends Component {
 
     const apiRequestUrl = 'https://newsapi.org/v2/everything?pageSize=30&sortBy=relevancy&apiKey=05f484c7a0f54357ae8795760dc7d2b1'
     const query = Object.keys(this.state)
-                .filter(key => ['q','from','to', 'sources'].includes(key))
-                .map(key =>
-                  key === 'sources' ? (key + '=' + this.state.sources.join(',')) : (key + '=' + this.state[key])
-                )
-                .join('&');
+      .filter(key => ['q','from','to', 'sources'].includes(key))
+      .map(key =>
+        key === 'sources' ? (key + '=' + this.state.sources.join(',')) : (key + '=' + this.state[key])
+      )
+      .join('&');
 
     try {
       debugger;
@@ -111,21 +111,20 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="navigation">
-          <Navigation
-            sourceOptions={this.state.sourceOptions}
-            keywordInput={this.getKeyword.bind(this)}
-            dateSet={this.getDate.bind(this)}
-            checkboxClick={this.getSources.bind(this)}
-            onSearch={this.getArticles.bind(this)}
-          />
-        </div>
+        <Navigation
+          sourceOptions={this.state.sourceOptions}
+          keywordInput={this.getKeyword.bind(this)}
+          dateSet={this.getDate.bind(this)}
+          checkboxClick={this.getSources.bind(this)}
+          onSearch={this.getArticles.bind(this)}
+        />
         <ViewButtons
           changeView={this.changeView.bind(this)}
         />
-        <div className="articles">
-          <Articles articles={this.state.articles} view={this.state.view}/>
-        </div>
+        <Articles
+          articles={this.state.articles}
+          view={this.state.view}
+        />
       </div>
     )
   }

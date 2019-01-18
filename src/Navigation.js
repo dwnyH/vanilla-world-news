@@ -3,12 +3,12 @@ import './Navigation.css';
 
 const Navigation = ({keywordInput, dateSet, checkboxClick, onSearch, sourceOptions}) => {
     return (
-        <React.Fragment>
+        <div className="navigation">
             <KeywordSearch keywordInput={keywordInput} />
             <DateInput dateSet={dateSet} />
             <SourceFilter checkboxClick={checkboxClick} sourceOptions={sourceOptions} />
             <SearchSubmit onSearch={onSearch} />
-        </React.Fragment>
+        </div>
     )
 }
 
@@ -46,10 +46,15 @@ class SourceFilter extends Component {
     }
 
     renderSourceOptions() {
+        // const handleOnchange = (ev) => {
+        //     //console.log(ev.target.checked);
+        //     this.props.checkboxClick(ev.target);
+        // }
+
         const newsSourceList = this.props.sourceOptions.map((news) => {
             return (
                 <div className="sourceCheck" key={news.id}>
-                    <input type="checkbox" data-id={news.id} onChange={ev => {this.props.checkboxClick(ev.target.getAttribute('data-id'))}}></input>
+                    <input type="checkbox" data-id={news.id} onChange={(ev) => {this.props.checkboxClick(ev.target)}}></input>
                     <div className="source">{news.name}</div>
                 </div>
             );
