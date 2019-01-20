@@ -17,9 +17,15 @@ class App extends Component {
       to: '',
       view:'list'
     };
+    this.page = 0;
+    this.searching = false;
   }
 
   async componentDidMount() {
+
+    window.addEventListener('scroll', this.onScroll.bind(this));
+
+    this.searching = true;
     const sourceResponse = await fetch('https://newsapi.org/v2/sources?apiKey=05f484c7a0f54357ae8795760dc7d2b1');
     const sourceData = await sourceResponse.json();
     const sourceOptions = sourceData.sources;
@@ -28,23 +34,39 @@ class App extends Component {
       sourceOptions,
       loading: true
     })
+
   }
 
-  async getArticles(peace) {
+  async getArticles(buttonClicked) {
 
-    const apiRequestUrl = 'https://newsapi.org/v2/everything?pageSize=30&sortBy=relevancy&apiKey=05f484c7a0f54357ae8795760dc7d2b1'
+    if (buttonClicked) {
+      this.page = 1;
+    } else {
+      this.page++;
+    }
+    this.searching = true;
+    console.log(this.page, this.state)
+    const apiRequestUrl = `https://newsapi.org/v2/everything?pageSize=30&page=${this.page}&sortBy=relevancy&apiKey=05f484c7a0f54357ae8795760dc7d2b1`
     const query = Object.keys(this.state)
-      .filter(key => ['q','from','to', 'sources'].includes(key))
+      .filter(key => ['q', 'from', 'to', 'sources', 'page'].includes(key))
       .map(key =>
         key === 'sources' ? (key + '=' + this.state.sources.join(',')) : (key + '=' + this.state[key])
       )
       .join('&');
 
     try {
-      debugger;
+      this.searching = true;
       const articlesResponse = await fetch(`${apiRequestUrl}&${query}`);
       const articlesData = await articlesResponse.json();
-      const articles = articlesData.articles;
+      let articles;
+      if (buttonClicked) {
+        articles = articlesData.articles;
+      } else {
+        debugger;
+        articles = [...this.state.articles, ...articlesData.articles];
+      }
+
+      //console.log(articles);
 
       if (!articles) {
         alert('검색 범위를 다시 설정해주세요 :)')
@@ -53,11 +75,23 @@ class App extends Component {
       } else {
         this.setState({ articles });
       }
+
+      this.searching = false;
+
     } catch (err) {
       console.log(err);
       alert('검색 범위를 다시 설정해주세요 :)');
     }
 
+  }
+
+  onScroll() {
+    //console.log(this.page, this.state);
+    if (!this.searching) {
+      if ((window.innerHeight + window.scrollY) >= (document.body.scrollHeight - 100) && this.state.articles.length) {
+        this.getArticles();
+      }
+    }
   }
 
   getKeyword(keyword) {
@@ -120,8 +154,11 @@ class App extends Component {
         />
         <ViewButtons
           changeView={this.changeView.bind(this)}
+          view={this.state.view}
+          hasArticles={Boolean(this.state.articles.length)}
         />
         <Articles
+          hasArticles={Boolean(this.state.articles.length)}
           articles={this.state.articles}
           view={this.state.view}
         />

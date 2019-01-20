@@ -4,27 +4,44 @@ import './Navigation.css';
 const Navigation = ({keywordInput, dateSet, checkboxClick, onSearch, sourceOptions}) => {
     return (
         <div className="navigation">
-            <KeywordSearch keywordInput={keywordInput} />
-            <DateInput dateSet={dateSet} />
-            <SourceFilter checkboxClick={checkboxClick} sourceOptions={sourceOptions} />
-            <SearchSubmit onSearch={onSearch} />
+            <div className="navigationContext">
+                <Title />
+                <KeywordSearch keywordInput={keywordInput} />
+                <DateInput dateSet={dateSet} />
+                <SourceFilter checkboxClick={checkboxClick} sourceOptions={sourceOptions} />
+                <SearchSubmit onSearch={onSearch} />
+            </div>
         </div>
+    )
+}
+
+const Title = (keyword) => {
+    return (
+        <React.Fragment>
+            <div className="webTitle"> Vanilla News </div>
+            <div className="line"></div>
+            <div className="subtitle"> Explore channels, topics, and stories in News  </div>
+        </ React.Fragment>
     )
 }
 
 const KeywordSearch = ({keywordInput}) => {
     return (
-        <div className="keyword">
-            <input type="text" onChange={ev => keywordInput(ev.target.value)} />
-        </div>
+        <input type="text" className="keywordSearch" onChange={ev => keywordInput(ev.target.value)} />
     );
 }
 
 const DateInput = ({dateSet}) => {
     return (
         <div className="dateFilter">
-            <input className="startDate" type="date" onChange={ev => dateSet(`from ${ev.target.value}`)}></input>
-            <input className="endDate" type="date" onChange={ev => dateSet(`to ${ev.target.value}`)}></input>
+        {/* <div className="sourceOptionsButton" onClick={this.handleClick.bind(this)}> news options ∨ </div>
+        <div className="sourceOptions" style={{display: this.state.optionsVisible ? 'block' : 'none' }}>
+            {this.props.sourceOptions.length? this.renderSourceOptions() : 'Loading' }
+        </div> */}
+            <label htmlFor="startDate">from</label>
+            <input id="startDate" type="date"  placeholder="from" onChange={ev => dateSet(`from ${ev.target.value}`)}></input>
+            <label htmlFor="endDate">to</label>
+            <input id="endDate" type="date" onChange={ev => dateSet(`to ${ev.target.value}`)}></input>
         </div>
     );
 
@@ -66,7 +83,7 @@ class SourceFilter extends Component {
     render() {
         return (
             <div className="sourceFilter">
-                <div className="sourceOptionsButton" onClick={this.handleClick.bind(this)}> news options ∨ </div>
+                <div className="sourceOptionsButton" onClick={this.handleClick.bind(this)}>News Channel ∨ </div>
                 <div className="sourceOptions" style={{display: this.state.optionsVisible ? 'block' : 'none' }}>
                     {this.props.sourceOptions.length? this.renderSourceOptions() : 'Loading' }
                 </div>
@@ -77,7 +94,7 @@ class SourceFilter extends Component {
 
 const SearchSubmit = ({onSearch}) => {
     return (
-        <button className="search" onClick={onSearch}>Search</button>
+        <button className="search" onClick={onSearch.bind(null, true)}>Search</button>
     );
 }
 

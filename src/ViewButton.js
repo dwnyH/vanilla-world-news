@@ -1,21 +1,27 @@
 import React, { Component } from 'react';
 import './ViewButton.css';
 
-const ViewButtons = ({changeView}) => {
+const ViewButtons = ({view, changeView, hasArticles}) => {
+
     return (
-        <React.Fragment>
-            <ListButton changeView={changeView}/>
-            <CardButton changeView={changeView}/>
-        </React.Fragment>
+        hasArticles &&
+        <div className="viewButtons">
+            <ListButton changeView={changeView} clicked={Boolean(view === 'list')} />
+            <CardButton changeView={changeView} clicked={Boolean(view === 'card')} />
+        </div>
     )
 }
 
-const ListButton = ({changeView}) => {
-    return <button className="listButton" onClick={ev => changeView(ev.target.className)}>list</button>
+const ListButton = ({changeView, clicked}) => {
+    return (
+        <button className={`${clicked? "clicked": ''} listButton`} onClick={ev => changeView(ev.target.className)}>list</button>
+    )
 }
 
-const CardButton = ({changeView}) => {
-    return <button className="cardButton" onClick={ev => changeView(ev.target.className)}>card</button>
+const CardButton = ({changeView, clicked}) => {
+    return (
+        <button className={`${clicked? "clicked": ''} cardButton`} onClick={ev => changeView(ev.target.className)}>card</button>
+    )
 }
 
 export default ViewButtons;

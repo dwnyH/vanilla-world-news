@@ -1,0 +1,21 @@
+.viewButtons {
+    margin: 50px;
+}
+.listButton, .cardButton {
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 550;
+    padding: 3px 10px;
+    border: none;
+    background: rgb(241, 239, 239);
+    color: rgb(92, 105, 104);
+}
+.clicked {
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 550;
+    padding: 3px 10px;
+    border: none;
+    background: rgb(92, 105, 104);
+    color: rgb(241, 239, 239);
+}
