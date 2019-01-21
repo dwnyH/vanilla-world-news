@@ -4,10 +4,10 @@
 
 .loader {
   display: flex;
-  width: 120px;
-  height: 120px;
-  border: 16px solid rgb(252, 235, 214);
-  border-top: 16px solid rgb(240, 176, 74);
+  width: 80px;
+  height: 80px;
+  border: 16px solid rgb(156, 241, 222);
+  border-top: 16px solid rgb(16, 150, 118);
   border-radius: 50%;
   animation: spin 2s linear infinite;
 }
@@ -30,4 +30,3 @@
   align-items: center;
   justify-content: center;
 }
-

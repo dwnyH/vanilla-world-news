@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import './Navigation.css';
-import { debounce } from 'lodash';
 
-const Navigation = ({keywordInput, dateSet, checkboxClick, onSearch, sourceOptions}) => {
+function Navigation({ keywordInput, dateSet, checkboxClick, onSearch, sourceOptions }) {
     return (
         <div className="navigation">
             <div className="navigationContext">
@@ -13,43 +12,37 @@ const Navigation = ({keywordInput, dateSet, checkboxClick, onSearch, sourceOptio
                 <SearchSubmit onSearch={onSearch} />
             </div>
         </div>
-    )
-}
-
-const Title = (keyword) => {
-    return (
-        <React.Fragment>
-            <div className="webTitle"> Vanilla News </div>
-            <div className="line"></div>
-            <div className="subtitle"> Explore channels, topics, and stories in News  </div>
-        </ React.Fragment>
-    )
-}
-
-const KeywordSearch = ({keywordInput}) => {
-    return (
-        <input type="text" className="keywordSearch" onChange={ ev => { keywordInput(ev.target.value) } }/>
     );
 }
 
-const DateInput = ({dateSet}) => {
+function Title() {
+  return (
+    <React.Fragment>
+      <div className="webTitle"> Vanilla News </div>
+      <div className="line" />
+      <div className="subtitle"> Explore channels, topics, and stories in News </div>
+    </React.Fragment>
+  );
+}
+
+function KeywordSearch({keywordInput}) {
+    return (
+        <input type="text" className="keywordSearch" onChange={ev => { keywordInput(ev.target.value)}} />
+    );
+}
+
+function DateInput({dateSet}) {
     return (
         <div className="dateFilter">
-        {/* <div className="sourceOptionsButton" onClick={this.handleClick.bind(this)}> news options ∨ </div>
-        <div className="sourceOptions" style={{display: this.state.optionsVisible ? 'block' : 'none' }}>
-            {this.props.sourceOptions.length? this.renderSourceOptions() : 'Loading' }
-        </div> */}
             <label htmlFor="startDate">from</label>
             <input id="startDate" type="date"  placeholder="from" onChange={ev => dateSet(`from ${ev.target.value}`)}></input>
             <label htmlFor="endDate">to</label>
             <input id="endDate" type="date" onChange={ev => dateSet(`to ${ev.target.value}`)}></input>
         </div>
     );
-
 }
 
 class SourceFilter extends Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -64,15 +57,12 @@ class SourceFilter extends Component {
     }
 
     renderSourceOptions() {
-
-        const newsSourceList = this.props.sourceOptions.map((news) => {
-            return (
-                <div className="sourceCheck" key={news.id}>
-                    <input type="checkbox" data-id={news.id} onChange={(ev) => {this.props.checkboxClick(ev.target)}}></input>
-                    <div className="source">{news.name}</div>
-                </div>
-            );
-        });
+        const newsSourceList = this.props.sourceOptions.map((news) => (
+            <div className="sourceCheck" key={news.id}>
+                <input type="checkbox" data-id={news.id} onChange={(ev) => {this.props.checkboxClick(ev.target)}} />
+                <div className="source">{news.name}</div>
+            </div>
+        ));
 
         return newsSourceList;
     }
@@ -89,7 +79,7 @@ class SourceFilter extends Component {
     }
 }
 
-const SearchSubmit = ({onSearch}) => {
+function SearchSubmit({onSearch}) {
     return (
         <button className="search" onClick={onSearch.bind(null, true)}>Search</button>
     );

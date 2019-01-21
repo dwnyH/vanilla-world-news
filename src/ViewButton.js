@@ -1,27 +1,30 @@
 import React, { Component } from 'react';
 import './ViewButton.css';
 
-const ViewButtons = ({view, changeView, hasArticles}) => {
-
+function ViewButtons({view, viewButtonClick, hasArticles}) {
     return (
         hasArticles &&
         <div className="viewButtons">
-            <ListButton changeView={changeView} clicked={Boolean(view === 'list')} />
-            <CardButton changeView={changeView} clicked={Boolean(view === 'card')} />
+            <ListButton changeView={viewButtonClick} clicked={Boolean(view === 'list')} />
+            <CardButton changeView={viewButtonClick} clicked={Boolean(view === 'card')} />
         </div>
-    )
+    );
 }
 
-const ListButton = ({changeView, clicked}) => {
+function ListButton({changeView, clicked}) {
     return (
-        <button className={`${clicked? "clicked": ''} listButton`} onClick={ev => changeView(ev.target.className)}>list</button>
-    )
+        <button className={`${clicked? "clicked": ''} listButton`} onClick={ev => changeView(ev.target.className)}>
+            list
+        </button>
+    );
 }
 
-const CardButton = ({changeView, clicked}) => {
+function CardButton({changeView, clicked}) {
     return (
-        <button className={`${clicked? "clicked": ''} cardButton`} onClick={ev => changeView(ev.target.className)}>card</button>
-    )
+        <button className={`${clicked? "clicked": ''} cardButton`} onClick={ev => changeView(ev.target.className)}>
+            card
+        </button>
+    );
 }
 
 export default ViewButtons;
