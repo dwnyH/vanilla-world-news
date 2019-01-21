@@ -8,8 +8,8 @@ class Articles extends Component {
         this.state = { modalOpen : false, modalArticle : ''};
     }
 
+
     showModal(title) {
-        debugger;
         let clickedArticle;
         console.log(this.props.articles);
         console.log('title', title);
@@ -27,30 +27,46 @@ class Articles extends Component {
     }
 
     render() {
+
         return (
             this.props.hasArticles &&
             <div className="articles">
-                {this.props.view === 'list' ? <ListView articles={this.props.articles} titleClicked={this.showModal.bind(this)} /> : <CardView articles={this.props.articles} titleClicked={this.showModal.bind(this)} />}
-                {this.state.modalOpen && <Modal article={this.state.modalArticle} closeButtonClicked = {this.closeModal.bind(this)} />}
+                {
+                    this.props.view === 'list'
+                        ? <ListView articles={this.props.articles} titleClicked={this.showModal.bind(this)} />
+                        : <CardView articles={this.props.articles} titleClicked={this.showModal.bind(this)} />
+                }
+                {
+                    this.state.modalOpen &&
+                    <Modal closeButtonClicked = {this.closeModal.bind(this)}>
+                         <div className="modalBox">
+                            {
+                                this.state.modalArticle.urlToImage
+                                    ? <img src={this.state.modalArticle.urlToImage} alt="" />
+                                    : <img src="https://images.unsplash.com/photo-1532687675593-2c2e705c5a9b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" alt="" />
+                            }
+                            <div className="contents">
+                                <div className="title">{this.state.modalArticle.title}</div>
+                                <div className="author">{this.state.modalArticle.author}</div>
+                                <div className="pubDate">{this.state.modalArticle.publishedAt}</div>
+                                <div className="description">{this.state.modalArticle.description}</div>
+                                <div className="url">{this.state.modalArticle.url}</div>
+                            </div>
+                        </div>
+                    </Modal>
+                }
             </div>
-        )
+        );
     }
 }
 
 const ListView = ({articles, titleClicked}) => {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         selectListStyle : true
-    //     }
-    // }
-
-    // render() {
     const articleList = articles.map((articles, index) => {
         return (
             <div className="articleListBox" key={index}>
-                {articles.urlToImage? 
-                    <img className="listImg" src={articles.urlToImage} alt="" />
+                {
+                    articles.urlToImage
+                    ? <img className="listImg" src={articles.urlToImage} alt="" />
                     : <img className="listImg" src="https://images.unsplash.com/photo-1532687675593-2c2e705c5a9b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" alt="" />
                 }
                 {/* <img className="listImg" src={articles.urlToImage} alt="" /> */}
@@ -91,34 +107,24 @@ const CardView = ({articles, titleClicked}) => {
     )
 }
 
-const Modal = ({article, closeButtonClicked}) => {
-    return (
-        <React.Fragment>
-            <ModalDetails article={article} close={closeButtonClicked}/>
-        </React.Fragment>
-    )
-}
+class Modal extends Component {
+    
+    componentDidMount() {
+        document.body.style.overflow = "hidden"
+    }
 
-const ModalDetails = ({article, close}) => {
-    debugger;
-    console.log(article);
-    return (
-        <div className="articleModal" onClick={close}>
-            <div className="modalBox">
-                {article.urlToImage?
-                    <img src={article.urlToImage} alt="" />
-                    : <img src="https://images.unsplash.com/photo-1532687675593-2c2e705c5a9b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" alt="" />
-                }
-                <div className="contents">
-                    <div className="title">{article.title}</div>
-                    <div className="author">{article.author}</div>
-                    <div className="pubDate">{article.publishedAt}</div>
-                    <div className="description">{article.description}</div>
-                    <div className="url">{article.url}</div>
-                </div>
-            </div>
+    componentWillUnmount() {
+        document.body.style.overflow = "visible"
+    }
+
+    render() {
+        return(
+            <div className="articleModal" onClick={this.props.closeButtonClicked}>
+            {this.props.children}
         </div>
-    )
+        )
+       
+    }
 }
 
 export default Articles;

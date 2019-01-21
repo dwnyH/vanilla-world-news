@@ -76,18 +76,26 @@
 
 .cardText > .title {
     cursor: pointer;
-    color: rgb(221, 221, 221);
+    color: white;
+    font-size: 25px;
+    font-weight: 800;
+}
+
+.cardText > .title:hover {
+    cursor: pointer;
+    color: rgb(255, 255, 198);
     font-size: 25px;
     font-weight: 800;
 }
 
 .cardText > .author {
-    color: rgb(206, 214, 186);
+    color: rgb(203, 204, 202);
     font-size: 18px;
     font-weight: 550;
     width: 200px;
     margin: 0 auto;
     padding-top: 25px;
+    word-break: break-word;
 }
 
 .articleModal {

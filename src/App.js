@@ -4,6 +4,14 @@ import Navigation from './Navigation.js';
 import Articles from './Articles.js';
 import ViewButtons from './ViewButton.js';
 
+const Loading = () => {
+  return (
+    <div className="loadingPage">
+      <div className="loader"></div>
+    </div>
+  )
+}
+
 class App extends Component {
 
   constructor(props) {
@@ -15,7 +23,8 @@ class App extends Component {
       q: '',
       from: '',
       to: '',
-      view:'list'
+      view: 'list',
+      loading: false
     };
     this.page = 0;
     this.searching = false;
@@ -31,21 +40,18 @@ class App extends Component {
     const sourceOptions = sourceData.sources;
 
     this.setState({
-      sourceOptions,
-      loading: true
+      sourceOptions
     })
 
   }
 
   async getArticles(buttonClicked) {
-
     if (buttonClicked) {
       this.page = 1;
     } else {
       this.page++;
     }
     this.searching = true;
-    console.log(this.page, this.state)
     const apiRequestUrl = `https://newsapi.org/v2/everything?pageSize=30&page=${this.page}&sortBy=relevancy&apiKey=05f484c7a0f54357ae8795760dc7d2b1`
     const query = Object.keys(this.state)
       .filter(key => ['q', 'from', 'to', 'sources', 'page'].includes(key))
@@ -55,18 +61,18 @@ class App extends Component {
       .join('&');
 
     try {
-      this.searching = true;
+      this.setState({ loading: true });
       const articlesResponse = await fetch(`${apiRequestUrl}&${query}`);
       const articlesData = await articlesResponse.json();
       let articles;
+
       if (buttonClicked) {
         articles = articlesData.articles;
       } else {
-        debugger;
         articles = [...this.state.articles, ...articlesData.articles];
       }
 
-      //console.log(articles);
+      this.setState({ loading: false });
 
       if (!articles) {
         alert('검색 범위를 다시 설정해주세요 :)')
@@ -76,19 +82,16 @@ class App extends Component {
         this.setState({ articles });
       }
 
-      this.searching = false;
-
     } catch (err) {
       console.log(err);
       alert('검색 범위를 다시 설정해주세요 :)');
     }
-
+    this.searching = false;
   }
 
   onScroll() {
-    //console.log(this.page, this.state);
     if (!this.searching) {
-      if ((window.innerHeight + window.scrollY) >= (document.body.scrollHeight - 100) && this.state.articles.length) {
+      if ((window.innerHeight + window.scrollY) >= (document.body.scrollHeight) && this.state.articles.length) {
         this.getArticles();
       }
     }
@@ -118,7 +121,6 @@ class App extends Component {
     this.setState((prevState) => {
       let checkedSourceIndex = prevState.sources.indexOf(checkedSources.getAttribute('data-id'));
       let checkedSourceCopy = prevState.sources.slice();
-      debugger;
 
       if (checkedSourceIndex === -1) {
         if (prevState.sources.length >= 20) {
@@ -145,6 +147,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        {this.state.loading && <Loading />}
         <Navigation
           sourceOptions={this.state.sourceOptions}
           keywordInput={this.getKeyword.bind(this)}
@@ -166,5 +169,7 @@ class App extends Component {
     )
   }
 }
+
+
 
 export default App;

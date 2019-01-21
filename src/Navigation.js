@@ -63,10 +63,6 @@ class SourceFilter extends Component {
     }
 
     renderSourceOptions() {
-        // const handleOnchange = (ev) => {
-        //     //console.log(ev.target.checked);
-        //     this.props.checkboxClick(ev.target);
-        // }
 
         const newsSourceList = this.props.sourceOptions.map((news) => {
             return (
