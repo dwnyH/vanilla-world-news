@@ -108,7 +108,7 @@ const CardView = ({articles, titleClicked}) => {
 }
 
 class Modal extends Component {
-    
+
     componentDidMount() {
         document.body.style.overflow = "hidden"
     }
@@ -118,12 +118,11 @@ class Modal extends Component {
     }
 
     render() {
-        return(
+        return (
             <div className="articleModal" onClick={this.props.closeButtonClicked}>
-            {this.props.children}
-        </div>
+                {this.props.children}
+            </div>
         )
-       
     }
 }
 

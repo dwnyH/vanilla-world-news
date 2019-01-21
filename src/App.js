@@ -3,6 +3,7 @@ import './App.css';
 import Navigation from './Navigation.js';
 import Articles from './Articles.js';
 import ViewButtons from './ViewButton.js';
+import { debounce } from 'lodash';
 
 const Loading = () => {
   return (
@@ -26,13 +27,16 @@ class App extends Component {
       view: 'list',
       loading: false
     };
+
     this.page = 0;
     this.searching = false;
+    this.debouncedGettingInput = debounce(this.debouncedGettingInput, 300);
+    this.debouncedScroll = debounce(this.debouncedScroll, 300);
   }
 
   async componentDidMount() {
 
-    window.addEventListener('scroll', this.onScroll.bind(this));
+    window.addEventListener('scroll', this.debouncedScroll.bind(this));
 
     this.searching = true;
     const sourceResponse = await fetch('https://newsapi.org/v2/sources?apiKey=05f484c7a0f54357ae8795760dc7d2b1');
@@ -51,6 +55,7 @@ class App extends Component {
     } else {
       this.page++;
     }
+
     this.searching = true;
     const apiRequestUrl = `https://newsapi.org/v2/everything?pageSize=30&page=${this.page}&sortBy=relevancy&apiKey=05f484c7a0f54357ae8795760dc7d2b1`
     const query = Object.keys(this.state)
@@ -89,7 +94,7 @@ class App extends Component {
     this.searching = false;
   }
 
-  onScroll() {
+  debouncedScroll() {
     if (!this.searching) {
       if ((window.innerHeight + window.scrollY) >= (document.body.scrollHeight) && this.state.articles.length) {
         this.getArticles();
@@ -98,9 +103,15 @@ class App extends Component {
   }
 
   getKeyword(keyword) {
+    debugger;
     this.setState({
       q : keyword
-    })
+    });
+  }
+
+  debouncedGettingInput(keyword) {
+    debugger;
+    this.getKeyword(keyword);
   }
 
   getDate(date) {
@@ -150,7 +161,7 @@ class App extends Component {
         {this.state.loading && <Loading />}
         <Navigation
           sourceOptions={this.state.sourceOptions}
-          keywordInput={this.getKeyword.bind(this)}
+          keywordInput={this.debouncedGettingInput.bind(this)}
           dateSet={this.getDate.bind(this)}
           checkboxClick={this.getSources.bind(this)}
           onSearch={this.getArticles.bind(this)}

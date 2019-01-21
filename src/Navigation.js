@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Navigation.css';
+import { debounce } from 'lodash';
 
 const Navigation = ({keywordInput, dateSet, checkboxClick, onSearch, sourceOptions}) => {
     return (
@@ -27,7 +28,7 @@ const Title = (keyword) => {
 
 const KeywordSearch = ({keywordInput}) => {
     return (
-        <input type="text" className="keywordSearch" onChange={ev => keywordInput(ev.target.value)} />
+        <input type="text" className="keywordSearch" onChange={ ev => { keywordInput(ev.target.value) } }/>
     );
 }
 
